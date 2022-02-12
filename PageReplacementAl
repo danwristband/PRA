@@ -1,0 +1,171 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int calculate_for_optimal(int page[], vector<int> &pageframe, int pagenumber, int index)
+{
+
+    int pos_onpageframe;
+    int farpos = index;
+    for (int i = 0; i < pageframe.size(); i++)
+    {
+        int j;
+        for (j = index; j < pagenumber; j++)
+        {
+            if (pageframe[i] == page[j])
+            {
+                if (j > farpos)
+                {
+                    farpos = j;
+                    pos_onpageframe = i;
+                }
+                break;
+            }
+        }
+
+        if (j == pagenumber)
+            return i;
+    }
+
+    return pos_onpageframe;
+}
+
+int calculate_for_LRU(int page[], vector<int> &pageframe, int pagenumber, int index)
+{
+
+    int pos_onpageframe;
+    int farpos = index;
+    for (int i = 0; i < pageframe.size(); i++)
+    {
+        int j;
+        for (j = index; j >= 0; j--)
+        {
+            if (pageframe[i] == page[j])
+            {
+                if (j < farpos)
+                {
+                    farpos = j;
+                    pos_onpageframe = i;
+                }
+                break;
+            }
+        }
+
+        if (j == index)
+            return i;
+    }
+
+    return pos_onpageframe;
+}
+
+bool have_pagefault_fi(int key, vector<int> &pageframe, int cap)
+{
+    if (pageframe.size() < cap)
+    {
+        pageframe.insert(pageframe.end(), key);
+        return true;
+    }
+    else
+    {
+        for (int i = 0; i < pageframe.size(); i++)
+        {
+            if (pageframe[i] == key)
+                return false;
+        }
+        return true;
+    }
+}
+
+bool have_pagefault(int key, vector<int> &pageframe, int cap)
+{
+    if (pageframe.size() < cap)
+    {
+        pageframe.push_back(key);
+        return true;
+    }
+    else
+    {
+        for (int i = 0; i < pageframe.size(); i++)
+        {
+            if (pageframe[i] == key)
+                return false;
+        }
+        return true;
+    }
+}
+
+void optimalAlgo(int page[], int pagenumber, int capacity)
+{
+    vector<int> pageframe;
+    int pagefault = 0;
+    for (int i = 0; i < pagenumber; i++)
+    {
+
+        if (have_pagefault(page[i], pageframe, capacity))
+        {
+            pagefault++;
+
+            int j = calculate_for_optimal(page, pageframe, pagenumber, i + 1);
+            pageframe[j] = page[i];
+        }
+    }
+    cout << "PageFaults = " << pagefault << endl;
+}
+
+void fifoAlgo(int page[], int pagenumber, int capacity)
+{
+    vector<int> pageframe;
+    int pagefault = 0;
+
+    for (int i = 0; i < pagenumber; i++)
+    {
+        if (have_pagefault_fi(page[i], pageframe, capacity))
+        {
+            pagefault++;
+            pageframe.erase(pageframe.begin());
+            pageframe.insert(pageframe.end(), page[i]);
+        }
+    }
+
+    cout << "PageFaults = " << pagefault << endl;
+}
+
+void LRUAlgo(int page[], int pagenumber, int capacity)
+{
+    vector<int> pageframe;
+    int pagefault = 0;
+    for (int i = 0; i < pagenumber; i++)
+    {
+
+        if (have_pagefault(page[i], pageframe, capacity))
+        {
+            pagefault++;
+
+            int j = calculate_for_LRU(page, pageframe, pagenumber, i);
+            pageframe[j] = page[i];
+        }
+    }
+    cout << "PageFaults = " << pagefault << endl;
+}
+
+int main()
+{
+    int page[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1};
+    int pg2[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2};
+    int pagefifo[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1};
+    int pagenumber = sizeof(page) / sizeof(page[0]);
+    int pg2number = sizeof(pg2) / sizeof(pg2[0]);
+    int capacity = 3;
+    cout << "Optimal" << endl;
+    optimalAlgo(page, pagenumber, capacity);
+    optimalAlgo(pg2, 13, 4);
+    cout << "FIFO" << endl;
+    fifoAlgo(page, pagenumber, capacity);
+    fifoAlgo(pg2, pg2number, 4);
+    cout << "LRU" << endl;
+    LRUAlgo(page, pagenumber, capacity);
+    LRUAlgo(page, pg2number, 4);
+
+    return 0;
+}

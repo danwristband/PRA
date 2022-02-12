@@ -62,7 +62,8 @@ int calculate_for_LRU(int page[], vector<int> &pageframe, int pagenumber, int in
 bool have_pagefault_fi(int key, vector<int> &pageframe, int cap)
 {
     if (pageframe.size() < cap)
-    {
+    {  
+        
         pageframe.insert(pageframe.end(), key);
         return true;
     }
@@ -151,21 +152,54 @@ void LRUAlgo(int page[], int pagenumber, int capacity)
 
 int main()
 {
-    int page[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1};
-    int pg2[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2};
-    int pagefifo[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1};
-    int pagenumber = sizeof(page) / sizeof(page[0]);
-    int pg2number = sizeof(pg2) / sizeof(pg2[0]);
+    int reference_string_1 [] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0,
+                                 1, 2, 3, 4, 5, 6, 7, 8, 9, 0,
+                                 1, 2, 3, 4, 5, 6, 7, 8, 9, 0
+                                 };
+    
+    int reference_string_2 [] = {1, 1, 1, 2, 2, 2, 3, 3, 3, 1,
+                                 4, 4, 4, 5, 5, 5, 2, 2, 2, 3,
+                                 1, 1, 1, 2, 2, 2, 3, 3, 3, 1,
+                                 4, 4, 4, 5, 5, 5, 2, 2, 2, 3,
+                                 1, 2, 3, 4, 5, 5, 4, 3, 2, 1
+                                 };
+
+    int reference_string_3 [] = {1, 2, 3, 4, 5, 5, 4, 3, 2, 1,
+                                 5, 4, 3, 2, 1, 1, 2, 3, 4, 5,
+                                 0, 9, 8, 7, 6, 6, 7, 8, 9, 0,
+                                 6, 7, 8, 9, 0, 0, 9, 8, 7, 6,
+                                 1, 2, 3, 4, 5, 5, 4, 3, 2, 1,
+                                 4, 4, 4, 5, 5, 5, 2, 2, 2, 3,
+                                 1, 2, 3, 4, 5, 5, 4, 3, 2, 1,
+                                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                 9, 1, 8, 2, 7, 3, 6, 4, 5, 5,
+                                 1, 2, 1, 2, 3, 1, 2, 1, 2, 1,
+                                 
+                                 };
+
+    
+    int pagenumber1 = sizeof(reference_string_1)/sizeof(reference_string_1[0]) ;
+    int pagenumber2 = sizeof(reference_string_2)/sizeof(reference_string_2[0]) ;
+    int pagenumber3 = sizeof(reference_string_3)/sizeof(reference_string_3[0]) ;
     int capacity = 3;
-    cout << "Optimal" << endl;
-    optimalAlgo(page, pagenumber, capacity);
-    optimalAlgo(pg2, 13, 4);
-    cout << "FIFO" << endl;
-    fifoAlgo(page, pagenumber, capacity);
-    fifoAlgo(pg2, pg2number, 4);
-    cout << "LRU" << endl;
-    LRUAlgo(page, pagenumber, capacity);
-    LRUAlgo(page, pg2number, 4);
+
+    cout << "Test reference_string_1"  << endl;
+
+    fifoAlgo(reference_string_1, pagenumber1, capacity);
+    LRUAlgo(reference_string_1, pagenumber1, capacity);
+    optimalAlgo(reference_string_1, pagenumber1, capacity);
+
+    // cout << endl<<"Test reference_string_2"  << endl;
+
+    // fifoAlgo(reference_string_2, pagenumber2, capacity);
+    // LRUAlgo(reference_string_2, pagenumber2, capacity);
+    // optimalAlgo(reference_string_2, pagenumber2, capacity);
+    
+    // cout << endl<<"Test reference_string_3"  << endl;
+
+    // fifoAlgo(reference_string_3, pagenumber3, capacity);
+    // LRUAlgo(reference_string_3, pagenumber3, capacity);
+    // optimalAlgo(reference_string_3, pagenumber3, capacity);
 
     return 0;
 }
